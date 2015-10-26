@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <mpi/mpi.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -65,7 +66,21 @@ int main(int argc, char *argv[])
         MPI_Recv(buffer, response_length, MPI_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
         string result(buffer);
-        cout << "Received " << result<< endl;
+        cout << "Received " << buffer<< endl;
+
+        // Open file, containing a number
+        ifstream file_with_number(buffer);
+        string line;
+        int number;
+
+        while(getline(file_with_number, line))
+        {
+            cout << "Read " << line << endl;
+            number = atoi(line.c_str());
+        }
+
+        cout << "Converted " << number << endl;
+
 
     }
     err = MPI_Finalize();

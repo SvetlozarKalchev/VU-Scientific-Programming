@@ -1,2 +1,2 @@
-/number.txt
+number.txt
 
