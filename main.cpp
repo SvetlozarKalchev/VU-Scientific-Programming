@@ -38,7 +38,7 @@ void send_File_Path_To_All_Ranks(const string &path_to_number, int size)
         for(int process_number = 1; process_number < size; process_number++)
         {
             /** Message length is path.length() + 1 to have space for the null terminator **/
-            MPI_Send(&text, path_to_number.length() + 1, MPI_CHAR, process_number, 0, MPI_COMM_WORLD);
+            MPI_Send(text, path_to_number.length() + 1, MPI_CHAR, process_number, 0, MPI_COMM_WORLD);
         }
         cout << '\n' << endl;
 }
