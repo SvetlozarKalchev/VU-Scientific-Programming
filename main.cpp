@@ -2,6 +2,7 @@
 #include <fstream>
 #include <mpi/mpi.h>
 #include <stdlib.h>
+#include <string.h>
 
 using namespace std;
 
@@ -22,11 +23,22 @@ string read_File_Path()
 
 void send_File_Path_To_All_Ranks(const string &path_to_number, int size)
 {
+    /**
+        C++ strings are convertible to const void * , but MPI.Send() needs void *, so
+        convert to char[].
+    **/
+    char *text = new char[path_to_number.length()+1];
+
+    for(int i = 0; i < path_to_number.length()+1; i++)
+    {
+        text[i] = path_to_number[i];
+    }
+
     /** Send file path to all other processes **/
         for(int process_number = 1; process_number < size; process_number++)
         {
             /** Message length is path.length() + 1 to have space for the null terminator **/
-            MPI_Send(path_to_number.c_str(), path_to_number.length() + 1, MPI_CHAR, process_number, 0, MPI_COMM_WORLD);
+            MPI_Send(&text, path_to_number.length() + 1, MPI_CHAR, process_number, 0, MPI_COMM_WORLD);
         }
         cout << '\n' << endl;
 }
