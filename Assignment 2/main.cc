@@ -236,6 +236,7 @@ int main(int argc, char* argv[])
 
                 // Evolve the value
                 cout << "Evolved value: " << evolve(up, right, down, left) << endl;
+                // TODO: Write the value to the new matrix
                 }
             }
         }
