@@ -165,7 +165,7 @@ int evolve(int up, int right, int down, int left)
 int main(int argc, char *argv[])
 {
     /* Allocate matrix */
-    int matrix_size = 10;
+    int matrix_size = 4;
 
     vector<vector<int>> global_matrix = create_matrix(matrix_size);
 
@@ -175,86 +175,108 @@ int main(int argc, char *argv[])
 
 
     int current_pos[2] = {0, 0};
+    int row_start;
     int row_limit = matrix_size;
     int col_limit = matrix_size;
     int up, right, down, left;
     vector<int> generated_borders;
 
-    /* Go through the matrix and evolve each cell */
-    for(int row = 0; row < row_limit; row++)
+    omp_set_num_threads(2);
+    #pragma omp parallel default(shared) private(row_start)
     {
-        current_pos[0] = row;
+        cout << "THREAD NUMBER: " << omp_get_thread_num() << ' ' << endl;
 
-        for(int col = 0; col < col_limit; col++)
+        int thread = omp_get_thread_num();
+        if(thread == 0)
         {
-            current_pos[1] = col;
+            row_start = 0;
+            row_limit = 2;
+        }
+        else
+        {
+            row_start = 20;
+            row_limit = matrix_size;
+        }
+        #pragma omp parallel for default(shared) \
+                                private(generated_borders, current_pos, up, right, down, left)
+        /* Go through the matrix and evolve each cell */
+        for(int row = row_start; row < row_limit; row++)
+        {
+            current_pos[0] = row;
 
-            if(is_pos_valid(current_pos, matrix_size))
+            #pragma omp parallel for default(shared)
+            for(int col = 0; col < col_limit; col++)
             {
-                up = global_matrix[row-1][col];
-                right = global_matrix[row][col+1];
-                down = global_matrix[row+1][col];
-                left = global_matrix[row][col-1];
-            }
-            else
-            {
-                generated_borders = generate_border(current_pos, matrix_size);
-                    /*
-                        Iterate over received array with generated values.
-                        No cell needs more than 2 borders generated, so the array will always contain at least two -1 values.
-                        -1 denotes a border value that's already in the matrix.
-                    */
-                cout << "Generated borders: ";
-                for(int i = 0; i < 4; i++)
+                current_pos[1] = col;
+
+                if(is_pos_valid(current_pos, matrix_size))
                 {
-                    if(generated_borders[i] != -1)
-                    {
-                        switch(i)
-                        {
-                            case 0:
-                                up = generated_borders[i];
-                                break;
-                            case 1:
-                                right = generated_borders[i];
-                                break;
-                            case 2:
-                                down = generated_borders[i];
-                                break;
-                            case 3:
-                                left = generated_borders[i];
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        switch(i)
-                        {
-                            case 0:
-                                up = global_matrix[row-1][col];
-                                break;
-                            case 1:
-                                right = global_matrix[row][col+1];
-                                break;
-                            case 2:
-                                down = global_matrix[row+1][col];
-                                break;
-                            case 3:
-                                left = global_matrix[row][col-1];
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-
-                    cout << generated_borders[i] << ' ';
+                    up = global_matrix[row-1][col];
+                    right = global_matrix[row][col+1];
+                    down = global_matrix[row+1][col];
+                    left = global_matrix[row][col-1];
                 }
-                cout << endl;
+                else
+                {
+                    generated_borders = generate_border(current_pos, matrix_size);
+                        /*
+                            Iterate over received array with generated values.
+                            No cell needs more than 2 borders generated, so the array will always contain at least two -1 values.
+                            -1 denotes a border value that's already in the matrix.
+                        */
+                    cout << "Generated borders: ";
+                    for(int i = 0; i < 4; i++)
+                    {
+                        if(generated_borders[i] != -1)
+                        {
+                            switch(i)
+                            {
+                                case 0:
+                                    up = generated_borders[i];
+                                    break;
+                                case 1:
+                                    right = generated_borders[i];
+                                    break;
+                                case 2:
+                                    down = generated_borders[i];
+                                    break;
+                                case 3:
+                                    left = generated_borders[i];
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            switch(i)
+                            {
+                                case 0:
+                                    up = global_matrix[row-1][col];
+                                    break;
+                                case 1:
+                                    right = global_matrix[row][col+1];
+                                    break;
+                                case 2:
+                                    down = global_matrix[row+1][col];
+                                    break;
+                                case 3:
+                                    left = global_matrix[row][col-1];
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        cout << generated_borders[i] << ' ';
+                    }
+                    cout << endl;
+                }
             }
         }
+        /* END OF FOR LOOP */
+        cout << "END" << endl;
     }
-
 
     return 0;
 }
