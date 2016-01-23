@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
                             No cell needs more than 2 borders generated, so the array will always contain at least two -1 values.
                             -1 denotes a border value that's already in the matrix.
                         */
-                    cout << "Generated borders: ";
+                    //cout << "Generated borders: ";
                     for(int i = 0; i < 4; i++)
                     {
                         if(generated_borders[i] != -1)
@@ -292,22 +292,31 @@ int main(int argc, char *argv[])
                             }
                         }
 
-                        cout << generated_borders[i] << ' ';
+                        //cout << generated_borders[i] << ' ';
                     }
-                    cout << endl;
+                    //cout << endl;
                 }
                 /* Evolve cell */
                 evolved_value = evolve(up, right, down, left);
                 cout << "Evolved value: " << evolved_value << endl;
 
-                /* Write to buffer matrix after each cell evolution is complete */
+                /*
+                    Write to buffer matrix after each cell evolution is complete.
+                    Write to global matrix too.
+                */
                 local_matrix[row][col] = evolved_value;
+                //print_matrix(local_matrix);
 
-                print_matrix(local_matrix);
+                global_matrix[row][col] = evolved_value;
+                print_matrix(global_matrix);
             }
         }
+
+        #pragma omp barrier
         /* END OF FOR LOOP */
         cout << "END" << endl;
+
+    /* END OF WORKSHARING CONTRUCT*/
     }
 
     return 0;
