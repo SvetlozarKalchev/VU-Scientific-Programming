@@ -58,16 +58,16 @@ bool Matrix_Evolver::is_pos_valid(int pos[], int matrix_size)
     int x = pos[1];
     int limit = matrix_size - 1;
 
-    cout << "Y: " << y << " and X:" << x;
+    //cout << "Y: " << y << " and X:" << x;
 
     if(x > 0 && x < limit && y > 0 && y < limit)
     {
-        cout << " is VALID" << endl;
+        //cout << " is VALID" << endl;
         return true;
     }
     else
     {
-        cout << " is INVALID" << endl;
+        //cout << " is INVALID" << endl;
         return false;
     }
 }
@@ -188,7 +188,7 @@ void Matrix_Evolver::work(vector<vector<int>> &global_matrix, int matrix_size, i
 
         row_start = thread_number * chunk_size;
         row_limit = row_start + chunk_size;
-        cout << "THREAD NUMBER: " << omp_get_thread_num() << " with limits " << row_start << " and " << row_limit << endl;
+        //cout << "THREAD NUMBER: " << omp_get_thread_num() << " with limits " << row_start << " and " << row_limit << endl;
 
         #pragma omp parallel for default(shared) \
                                 private(generated_borders, current_pos, up, right, down, left)
@@ -267,17 +267,12 @@ void Matrix_Evolver::work(vector<vector<int>> &global_matrix, int matrix_size, i
                 }
                 /* Evolve cell */
                 evolved_value = evolve(up, right, down, left);
-                cout << "Evolved value: " << evolved_value << endl;
+                //cout << "Evolved value: " << evolved_value << endl;
 
                 /*
                     Write to buffer matrix after each cell evolution is complete.
-                    Write to global matrix too.
                 */
                 local_matrix[row][col] = evolved_value;
-                //print(local_matrix);
-
-                //global_matrix[row][col] = evolved_value;
-                //print_matrix(global_matrix);
             }
 
         }
@@ -288,15 +283,13 @@ void Matrix_Evolver::work(vector<vector<int>> &global_matrix, int matrix_size, i
 
         /*  Write to global matrix */
         #pragma omp parallel for default(shared)
-            for(int row = row_start; row < row_limit; row++)
+        for(int row = row_start; row < row_limit; row++)
+        {
+            for(int col = 0; col < col_limit; col++)
             {
-                for(int col = 0; col < col_limit; col++)
-                {
-                    global_matrix[row][col] = local_matrix[row][col];
-                }
+                global_matrix[row][col] = local_matrix[row][col];
             }
+        }
     /* END OF WORKSHARING CONTRUCT*/
     }
-
-    //#pragma omp barrier
 }
