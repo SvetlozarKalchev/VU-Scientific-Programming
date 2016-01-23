@@ -66,11 +66,12 @@ int main(int argc, char *argv[])
 
     /** Set number of threads and how many rows each thread will be getting **/
     int number_of_threads = 1;
+
     int chunk_size = matrix_size / number_of_threads;
 
     omp_set_num_threads(number_of_threads);
 
-    /** Allocate evolver object and call main method **/
+    /** Allocate evolver object and call main method for the set number of iterations **/
     Matrix_Evolver evolver;
 
     for(int i = 0; i < iterations; i++)
