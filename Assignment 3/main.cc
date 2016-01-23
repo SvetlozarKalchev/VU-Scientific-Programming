@@ -17,12 +17,28 @@ vector<vector<int>> create_matrix(int length)
 {
     vector<vector<int>> matrix(length, vector<int>(length));
 
-    // Fill the matrix with 0s
     for(int row = 0; row < length; row++)
     {
         for(int col = 0; col < length; col++)
         {
             matrix[row][col] = col;
+        }
+    }
+
+    return matrix;
+}
+
+
+vector<vector<int>> create_null_matrix(int length)
+{
+    vector<vector<int>> matrix(length, vector<int>(length));
+
+    // Fill the matrix with 0s
+    for(int row = 0; row < length; row++)
+    {
+        for(int col = 0; col < length; col++)
+        {
+            matrix[row][col] = 0;
         }
     }
 
@@ -181,10 +197,13 @@ int main(int argc, char *argv[])
     int up, right, down, left;
     vector<int> generated_borders;
 
-    omp_set_num_threads(2);
+    omp_set_num_threads(1);
     #pragma omp parallel default(shared) private(row_start)
     {
         cout << "THREAD NUMBER: " << omp_get_thread_num() << ' ' << endl;
+
+        /* Create a local buffer matrix for each thread */
+        vector<vector<int>> local_matrix = create_null_matrix(matrix_size);
 
         int thread = omp_get_thread_num();
         if(thread == 0)
@@ -271,6 +290,7 @@ int main(int argc, char *argv[])
                         cout << generated_borders[i] << ' ';
                     }
                     cout << endl;
+                    /* Write to buffer matrix */
                 }
             }
         }
