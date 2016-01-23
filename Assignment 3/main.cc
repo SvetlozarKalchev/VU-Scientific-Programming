@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
 
     /*******************/
 
-
+    /* Variables for the parallel construct and loop */
     int current_pos[2] = {0, 0};
     int row_start;
     int row_limit = matrix_size;
@@ -205,7 +205,11 @@ int main(int argc, char *argv[])
         /* Create a local buffer matrix for each thread */
         vector<vector<int>> local_matrix = create_null_matrix(matrix_size);
 
+        int evolved_value = 0;
+
+        /* Split work according to thread number */
         int thread = omp_get_thread_num();
+
         if(thread == 0)
         {
             row_start = 0;
@@ -216,6 +220,7 @@ int main(int argc, char *argv[])
             row_start = 20;
             row_limit = matrix_size;
         }
+
         #pragma omp parallel for default(shared) \
                                 private(generated_borders, current_pos, up, right, down, left)
         /* Go through the matrix and evolve each cell */
@@ -290,8 +295,15 @@ int main(int argc, char *argv[])
                         cout << generated_borders[i] << ' ';
                     }
                     cout << endl;
-                    /* Write to buffer matrix */
                 }
+                /* Evolve cell */
+                evolved_value = evolve(up, right, down, left);
+                cout << "Evolved value: " << evolved_value << endl;
+
+                /* Write to buffer matrix after each cell evolution is complete */
+                local_matrix[row][col] = evolved_value;
+
+                print_matrix(local_matrix);
             }
         }
         /* END OF FOR LOOP */
