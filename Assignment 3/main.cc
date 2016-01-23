@@ -55,7 +55,7 @@ void print_matrix(vector<vector<int>> matrix)
 int main(int argc, char *argv[])
 {
     /* Allocate matrix */
-    int matrix_size = 400;
+    int matrix_size = 4;
 
     vector<vector<int>> global_matrix = create_matrix(matrix_size);
 
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     int iterations = matrix_size;
 
     /** Set number of threads and how many rows each thread will be getting **/
-    int number_of_threads = 1;
+    int number_of_threads = 4;
 
     int chunk_size = matrix_size / number_of_threads;
 

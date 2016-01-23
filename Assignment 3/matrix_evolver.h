@@ -5,6 +5,8 @@ using namespace std;
 
 class Matrix_Evolver
 {
+    void print(vector<vector<int>> matrix);
+    vector<vector<int>> new_null_matrix(int length);
     bool is_pos_valid(int pos[], int matrix_size);
     vector<int> generate_border(int pos[2], int matrix_size);
     int evolve(int up, int right, int down, int left);
@@ -14,7 +16,36 @@ class Matrix_Evolver
     void work(vector<vector<int>> &matrix, int matrix_size, int chunk_size);
 };
 
+void Matrix_Evolver::print(vector<vector<int>> matrix)
+{
+    int matrix_size = matrix.size();
 
+    for(int row = 0; row < matrix_size; row++)
+    {
+        for(int col = 0; col < matrix_size; col++)
+        {
+           cout << matrix[row][col] << ' ';
+        }
+
+        cout << endl << endl;
+    }
+}
+
+vector<vector<int>> Matrix_Evolver::new_null_matrix(int length)
+{
+    vector<vector<int>> matrix(length, vector<int>(length));
+
+    // Fill the matrix with 0s
+    for(int row = 0; row < length; row++)
+    {
+        for(int col = 0; col < length; col++)
+        {
+            matrix[row][col] = 0;
+        }
+    }
+
+    return matrix;
+}
 /*** Functions that validate matrix positions and generate borders */
 
 /*
@@ -134,6 +165,7 @@ int Matrix_Evolver::evolve(int up, int right, int down, int left)
 
 void Matrix_Evolver::work(vector<vector<int>> &global_matrix, int matrix_size, int chunk_size)
 {
+
     /* Variables for the parallel construct and loop */
     int current_pos[2] = {0, 0};
     int rows_left = matrix_size;
@@ -142,12 +174,10 @@ void Matrix_Evolver::work(vector<vector<int>> &global_matrix, int matrix_size, i
     int up, right, down, left;
     vector<int> generated_borders;
 
-    #pragma omp parallel default(shared) private(row_start)
+    #pragma omp parallel default(shared) private(row_start, row_limit)
     {
-        cout << "THREAD NUMBER: " << omp_get_thread_num() << ' ' << endl;
-
         /* Create a local buffer matrix for each thread */
-        //vector<vector<int>> local_matrix = create_null_matrix(matrix_size);
+        vector<vector<int>> local_matrix = new_null_matrix(matrix_size);
 
         int evolved_value = 0;
         /*
@@ -158,6 +188,7 @@ void Matrix_Evolver::work(vector<vector<int>> &global_matrix, int matrix_size, i
 
         row_start = thread_number * chunk_size;
         row_limit = row_start + chunk_size;
+        cout << "THREAD NUMBER: " << omp_get_thread_num() << " with limits " << row_start << " and " << row_limit << endl;
 
         #pragma omp parallel for default(shared) \
                                 private(generated_borders, current_pos, up, right, down, left)
@@ -242,18 +273,30 @@ void Matrix_Evolver::work(vector<vector<int>> &global_matrix, int matrix_size, i
                     Write to buffer matrix after each cell evolution is complete.
                     Write to global matrix too.
                 */
-                //local_matrix[row][col] = evolved_value;
-                //print_matrix(local_matrix);
+                local_matrix[row][col] = evolved_value;
+                //print(local_matrix);
 
-                global_matrix[row][col] = evolved_value;
+                //global_matrix[row][col] = evolved_value;
                 //print_matrix(global_matrix);
             }
+
         }
+        /* END OF PARALLEL FOR LOOP */
 
+        /* Wait for all threads to finish with their calculations, before saving the results */
         #pragma omp barrier
-        /* END OF FOR LOOP */
-        cout << "END" << endl;
 
+        /*  Write to global matrix */
+        #pragma omp parallel for default(shared)
+            for(int row = row_start; row < row_limit; row++)
+            {
+                for(int col = 0; col < col_limit; col++)
+                {
+                    global_matrix[row][col] = local_matrix[row][col];
+                }
+            }
     /* END OF WORKSHARING CONTRUCT*/
     }
+
+    //#pragma omp barrier
 }
