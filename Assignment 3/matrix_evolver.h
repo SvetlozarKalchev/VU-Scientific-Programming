@@ -47,10 +47,9 @@ vector<vector<int>> Matrix_Evolver::new_null_matrix(int length)
     return matrix;
 }
 /*** Functions that validate matrix positions and generate borders */
-
 /*
     Provides placeholder values for elemets that have less than 4 neighbours.
-    Accepts an array with
+    Accepts an array with the current position and the matrix size.
 */
 bool Matrix_Evolver::is_pos_valid(int pos[], int matrix_size)
 {
