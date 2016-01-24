@@ -40,17 +40,17 @@ void print_matrix(vector<vector<int>> matrix)
 int main(int argc, char *argv[])
 {
     /* Set matrix size and allocate it */
-    int matrix_size = 1000;
+   int matrix_size = atoi(argv[1]);
 
     vector<vector<int>> global_matrix = create_matrix(matrix_size);
 
     //print_matrix(global_matrix);
 
     /** Number of iterations is equal to the matrix size **/
-    int iterations = 200;
+    int iterations = atoi(argv[2]);
 
     /** Set number of threads and how many rows each thread will be getting **/
-    int number_of_threads = 2;
+    int number_of_threads = atoi(argv[3]);
     omp_set_num_threads(number_of_threads);
 
     int chunk_size = matrix_size / number_of_threads;
