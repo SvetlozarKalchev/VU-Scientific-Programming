@@ -56,7 +56,7 @@ void print_matrix(vector<vector<int>> matrix)
 int main(int argc, char *argv[])
 {
     /* Set matrix size and allocate it */
-    int matrix_size = 500;
+    int matrix_size = 1000;
 
     vector<vector<int>> global_matrix = create_matrix(matrix_size);
 
@@ -67,23 +67,23 @@ int main(int argc, char *argv[])
 
     /** Set number of threads and how many rows each thread will be getting **/
     int number_of_threads = 2;
+    omp_set_num_threads(number_of_threads);
 
     int chunk_size = matrix_size / number_of_threads;
-
-    omp_set_num_threads(number_of_threads);
 
     /** Allocate evolver object and call main method for the set number of iterations **/
     Matrix_Evolver evolver;
 
-    /** Start measuring time here. **/
+    /** Start measuring time here, because there is no need to include the time it takes to allocate the huge matrix in the end result **/
     auto start_time = chrono::high_resolution_clock::now();
 
+    /** This is the main method, called by the main thread. The worksharing construct is inside.**/
     for(int i = 0; i < iterations; i++)
     {
         evolver.work(global_matrix, matrix_size, chunk_size);
     }
 
-    /** Finish measuring time here. **/
+    /** Finish measuring time here and convert the result to seconds. **/
     auto end_time = chrono::high_resolution_clock::now();
 
     chrono::duration<double, milli> elapsed_time = end_time - start_time;
