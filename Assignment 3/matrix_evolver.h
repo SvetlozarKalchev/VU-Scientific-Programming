@@ -278,7 +278,11 @@ void Matrix_Evolver::work(vector<vector<int>> &global_matrix, int matrix_size, i
         }
         /* END OF PARALLEL FOR LOOP */
 
-        /* Wait for all threads to finish with their calculations, before saving the results */
+        /*
+            Wait for all threads to finish with their calculations, before saving the results
+            Otherwise, threads that have already finished will overwrite matrix cells that are
+            still in use and the end result will be false.
+        */
         #pragma omp barrier
 
         /*  Write to global matrix */

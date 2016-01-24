@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
 #include <omp.h>
 #include "matrix_evolver.h"
 
@@ -53,25 +54,16 @@ void print_matrix(vector<vector<int>> matrix)
 
 /*** END ***/
 int main(int argc, char *argv[])
-{   /*
-        size 4, threads 1
-        27 12 7 9
-
-        32 13 8 9
-
-        34 17 10 12
-
-        36 23 19 18
-    */
-    /* Allocate matrix */
-    int matrix_size = 400;
+{
+    /* Set matrix size and allocate it */
+    int matrix_size = 500;
 
     vector<vector<int>> global_matrix = create_matrix(matrix_size);
 
     //print_matrix(global_matrix);
 
     /** Number of iterations is equal to the matrix size **/
-    int iterations = matrix_size;
+    int iterations = 200;
 
     /** Set number of threads and how many rows each thread will be getting **/
     int number_of_threads = 2;
@@ -83,12 +75,24 @@ int main(int argc, char *argv[])
     /** Allocate evolver object and call main method for the set number of iterations **/
     Matrix_Evolver evolver;
 
+    /** Start measuring time here. **/
+    auto start_time = chrono::high_resolution_clock::now();
+
     for(int i = 0; i < iterations; i++)
     {
         evolver.work(global_matrix, matrix_size, chunk_size);
     }
 
-    print_matrix(global_matrix);
+    /** Finish measuring time here. **/
+    auto end_time = chrono::high_resolution_clock::now();
+
+    chrono::duration<double, milli> elapsed_time = end_time - start_time;
+
+    auto elapsed_time_seconds = elapsed_time.count() / 1000;
+
+    cout << "Finished " << iterations << " iterations on a " << matrix_size << "x" << matrix_size << " matrix " << " with " << number_of_threads << " threads in " << elapsed_time_seconds << " seconds." << endl;
+
+    //print_matrix(global_matrix);
 
     return 0;
 }
