@@ -21,22 +21,6 @@ vector<vector<int>> create_matrix(int length)
     return matrix;
 }
 
-vector<vector<int>> create_null_matrix(int length)
-{
-    vector<vector<int>> matrix(length, vector<int>(length));
-
-    // Fill the matrix with 0s
-    for(int row = 0; row < length; row++)
-    {
-        for(int col = 0; col < length; col++)
-        {
-            matrix[row][col] = 0;
-        }
-    }
-
-    return matrix;
-}
-
 void print_matrix(vector<vector<int>> matrix)
 {
     int matrix_size = matrix.size();
