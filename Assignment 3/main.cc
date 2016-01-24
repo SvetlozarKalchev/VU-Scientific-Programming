@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     //print_matrix(global_matrix);
 
     /** Number of iterations is equal to the matrix size **/
-    int iterations = atoi(argv[2]);
+    int iterations = 200;
 
     /** Set number of threads and how many rows each thread will be getting **/
     int number_of_threads = atoi(argv[3]);
