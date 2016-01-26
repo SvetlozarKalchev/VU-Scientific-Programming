@@ -83,7 +83,8 @@ i
         [up, right, down, left] - ordered just the way the evolve function accepts them.
         Values that haven't been generated will be -1.
     */
-    vector<int> missing_positions = {-1, -1, -1, -1};
+    const int placeholder[] = {-1, -1, -1, -1};
+    vector<int> missing_positions(placeholder, placeholder + sizeof(placeholder) / sizeof(placeholder[0]));
 
     // Default border values
     int top_border = 8;
