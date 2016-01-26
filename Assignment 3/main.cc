@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     int iterations = 200;
 
     /** Set number of threads and how many rows each thread will be getting **/
-    int number_of_threads = atoi(argv[3]);
+    int number_of_threads = atoi(argv[2]);
     omp_set_num_threads(number_of_threads);
 
     int chunk_size = matrix_size / number_of_threads;
