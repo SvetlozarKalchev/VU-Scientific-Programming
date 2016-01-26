@@ -5,18 +5,18 @@ using namespace std;
 
 class Matrix_Evolver
 {
-    void print(vector<vector<int>> matrix);
-    vector<vector<int>> new_null_matrix(int length);
+    void print(vector< vector<int> > matrix);
+    vector< vector<int> > new_null_matrix(int length);
     bool is_pos_valid(int pos[], int matrix_size);
     vector<int> generate_border(int pos[2], int matrix_size);
     int evolve(int up, int right, int down, int left);
     void set_limits(int &row_start, int &row_limit, int number_of_threads);
 
     public:
-    void work(vector<vector<int>> &matrix, int matrix_size, int chunk_size);
+    void work(vector< vector<int> > &matrix, int matrix_size, int chunk_size);
 };
 
-void Matrix_Evolver::print(vector<vector<int>> matrix)
+void Matrix_Evolver::print(vector< vector<int> > matrix)
 {
     int matrix_size = matrix.size();
 
@@ -31,9 +31,9 @@ void Matrix_Evolver::print(vector<vector<int>> matrix)
     }
 }
 
-vector<vector<int>> Matrix_Evolver::new_null_matrix(int length)
+vector< vector<int> > Matrix_Evolver::new_null_matrix(int length)
 {
-    vector<vector<int>> matrix(length, vector<int>(length));
+    vector< vector<int> > matrix(length, vector<int>(length));
 
     // Fill the matrix with 0s
     for(int row = 0; row < length; row++)
@@ -162,7 +162,7 @@ int Matrix_Evolver::evolve(int up, int right, int down, int left)
     return value;
 }
 
-void Matrix_Evolver::work(vector<vector<int>> &global_matrix, int matrix_size, int chunk_size)
+void Matrix_Evolver::work(vector< vector<int> > &global_matrix, int matrix_size, int chunk_size)
 {
 
     /* Variables for the parallel construct and loop */
