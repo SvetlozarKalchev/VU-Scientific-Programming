@@ -177,7 +177,7 @@ void Matrix_Evolver::work(vector< vector<int> > &global_matrix, int matrix_size,
     #pragma omp parallel default(shared) private(row_start, row_limit)
     {
         /* Create a local buffer matrix for each thread */
-        vector<vector<int>> local_matrix = new_null_matrix(matrix_size);
+        vector< vector<int> > local_matrix = new_null_matrix(matrix_size);
 
         int evolved_value = 0;
         /*

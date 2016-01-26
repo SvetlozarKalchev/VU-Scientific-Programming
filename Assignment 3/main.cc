@@ -6,9 +6,9 @@
 
 using namespace std;
 
-vector<vector<int>> create_matrix(int length)
+vector< vector<int> > create_matrix(int length)
 {
-    vector<vector<int>> matrix(length, vector<int>(length));
+    vector< vector<int> > matrix(length, vector<int>(length));
 
     for(int row = 0; row < length; row++)
     {
@@ -21,7 +21,7 @@ vector<vector<int>> create_matrix(int length)
     return matrix;
 }
 
-void print_matrix(vector<vector<int>> matrix)
+void print_matrix(vector< vector<int> > matrix)
 {
     int matrix_size = matrix.size();
 
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     /* Set matrix size and allocate it */
    int matrix_size = atoi(argv[1]);
 
-    vector<vector<int>> global_matrix = create_matrix(matrix_size);
+    vector< vector<int> > global_matrix = create_matrix(matrix_size);
 
     //print_matrix(global_matrix);
 
