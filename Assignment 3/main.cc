@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <vector>
 #include <chrono>
 #include <omp.h>
