@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
-#include <chrono>
 #include <omp.h>
 #include "matrix_evolver.h"
 
@@ -45,8 +44,6 @@ int main(int argc, char *argv[])
 
     vector< vector<int> > global_matrix = create_matrix(matrix_size);
 
-    //print_matrix(global_matrix);
-
     /** Number of iterations is equal to the matrix size **/
     int iterations = 200;
 
@@ -60,7 +57,7 @@ int main(int argc, char *argv[])
     Matrix_Evolver evolver;
 
     /** Start measuring time here, because there is no need to include the time it takes to allocate the huge matrix in the end result **/
-    auto start_time = chrono::high_resolution_clock::now();
+    double start_time = omp_get_wtime();
 
     /** This is the main method, called by the main thread. The worksharing construct is inside.**/
     for(int i = 0; i < iterations; i++)
@@ -69,15 +66,10 @@ int main(int argc, char *argv[])
     }
 
     /** Finish measuring time here and convert the result to seconds. **/
-    auto end_time = chrono::high_resolution_clock::now();
-
-    chrono::duration<double, milli> elapsed_time = end_time - start_time;
-
-    auto elapsed_time_seconds = elapsed_time.count() / 1000;
+    double end_time = omp_get_wtime();
+    double elapsed_time_seconds = end_time - start_time;
 
     cout << "Finished " << iterations << " iterations on a " << matrix_size << "x" << matrix_size << " matrix " << " with " << number_of_threads << " threads in " << elapsed_time_seconds << " seconds." << endl;
-
-    //print_matrix(global_matrix);
 
     return 0;
 }
